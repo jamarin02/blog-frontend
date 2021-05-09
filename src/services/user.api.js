@@ -1,7 +1,7 @@
 import { AXIOS } from './api'
 
-export const postLogin = (username, password) => {
-    return AXIOS.post('/login', { username, password})
+export const postLogin = (email, password) => {
+    return AXIOS.post('/login', { email, password})
 }
 
 export const getUser = (id) => {
