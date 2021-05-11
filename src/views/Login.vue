@@ -1,5 +1,6 @@
 <template>
 <div>
+  <p v-if="error">There is no account with this email or password</p>
   <v-form
       ref="form"
       lazy-validation
@@ -35,6 +36,7 @@ export default {
   name: "Login",
   data: function () {
     return {
+      error: false,
       showPassword: false,
       valid: false,
       email: '',
@@ -56,19 +58,31 @@ export default {
     login: async function () {
       if(!this.$refs.form.validate())
         return
-      const loginUser = await userApi.postLogin(this.email, this.password)
-      await this.setLogin({
-        id: loginUser.data.id,
-        username: loginUser.data.username,
-        email: loginUser.data.email,
-        authToken: loginUser.data.authToken
-      })
-      await this.$router.push({name: 'Home'})
+      try {
+        const loginUser = await userApi.postLogin(this.email, this.password)
+        await this.setLogin({
+          id: loginUser.data.id,
+          username: loginUser.data.username,
+          email: loginUser.data.email,
+          authToken: loginUser.data.authToken
+        })
+        await this.$router.push({name: 'Home'})
+      } catch (error) {
+        console.error(error)
+        this.error = true
+      }
     }
   }
 }
 </script>
 
 <style scoped>
-
+  p {
+    background-color: red;
+    color: white;
+    font-size: 1em;
+    text-align: center;
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+  }
 </style>
